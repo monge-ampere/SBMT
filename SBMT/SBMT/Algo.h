@@ -62,10 +62,10 @@ struct Pt {
 	}
 };
 
-// 自定义比较函数，确保 Point2d 在 set 中唯一
+
 struct ComparePoints {
 	bool operator()(const Pt& p1, const Pt& p2) const {
-		// VS2013 可能不支持直接比较浮点数，所以用 epsilon 进行浮点比较
+
 		const float epsilon = 1e-6f;
 		if (fabs(p1.x - p2.x) > epsilon) {
 			return p1.x < p2.x;
@@ -778,44 +778,38 @@ double crossProduct(const T& p1, const T& p2, const T& p3)
 	return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
 }
 
-// 判断两个点是否相等（考虑浮点误差）
 template<class T>
 bool __declspec(dllexport) isSamePoint(const T &P1, const T &P2)
 {
 	return (abs(P1.x - P2.x) < EPSILON) && (abs(P1.y - P2.y) < EPSILON);
 }
 
-// 判断点是否在线段上
 template<class T>
 bool __declspec(dllexport) containsPoint(const T &lineP, const T &lineQ, const T &point)
 {
-	// 直接检查 point 是否是端点之一
 	if (isSamePoint(point, lineP) || isSamePoint(point, lineQ))
 	{
-		return true; // 点是端点
+		return true;
 	}
 
-	// 计算叉积，判断点是否在线段所在直线上
 	double crossPro = crossProduct(lineP, lineQ, point);
 	if (std::fabs(crossPro) > EPSILON) {
-		return false; // 叉积不为0，点不在线段所在直线上
+		return false;
 	}
 
-	// 计算点积，判断点是否在线段的范围内
 	double dotProduct = (point.x - lineP.x) * (lineQ.x - lineP.x)
 		+ (point.y - lineP.y) * (lineQ.y - lineP.y);
 	if (dotProduct < 0.0f) {
-		return false; // 点在延长线的反方向
+		return false; 
 	}
 
-	// 计算线段的平方长度
 	double squaredLengthBA = (lineQ.x - lineP.x) * (lineQ.x - lineP.x)
 		+ (lineQ.y - lineP.y) * (lineQ.y - lineP.y);
 	if (dotProduct > squaredLengthBA) {
-		return false; // 点超出了线段的范围
+		return false; 
 	}
 
-	return true; // 点在线段上
+	return true;
 }
 
 
@@ -826,11 +820,9 @@ int __declspec(dllexport) pointInTriangle(const T& A, const T& B, const T& C, co
 	double c2 = crossProduct(B, C, p);
 	double c3 = crossProduct(C, A, p);
 
-	// 判断是否完全在内部（所有叉积同号）
 	if ((c1 > 0 && c2 > 0 && c3 > 0) || (c1 < 0 && c2 < 0 && c3 < 0))
 		return 1; // Inside triangle
 
-	// 判断是否在线段上
 	if (std::abs(c1) < EPSILON && containsPoint(A, B, p)) return 2;  // On edge AB
 	if (std::abs(c2) < EPSILON && containsPoint(B, C, p)) return 3;  // On edge BC
 	if (std::abs(c3) < EPSILON && containsPoint(C, A, p)) return 4;  // On edge CA
@@ -850,7 +842,6 @@ inline bool isInsideBoundingBox(const Point2d& A, const Point2d& B, const Point2
 		p2.x < minX || p2.x > maxX || p2.y < minY || p2.y > maxY);
 }
 
-// 检查两条线段是否有顶点重合
 inline bool isVertexOverlap(const Point2d &A, const Point2d &B
 	, const Point2d &C, const Point2d &D, Point2d &intersect)
 {
@@ -880,7 +871,6 @@ inline bool isVertexOverlap(const Point2d &A, const Point2d &B
 	}
 }
 
-// 计算两条线段是否相交，并返回交点
 inline int getIntersection(Point2d A, Point2d B, Point2d C, Point2d D, Point2d &intersec)
 {
 	if (isVertexOverlap(A, B, C, D, intersec))
@@ -891,34 +881,31 @@ inline int getIntersection(Point2d A, Point2d B, Point2d C, Point2d D, Point2d &
 	double b = (D.x - C.x) * (B.y - A.y) - (D.y - C.y) * (B.x - A.x);
 	double c = (B.x - A.x) * (C.y - A.y) - (B.y - A.y) * (C.x - A.x);
 
-	// 处理共线情况
-	if (fabs(a) < EPSILON && fabs(b) < EPSILON) {
-		// 计算线段投影是否重叠
+	if (fabs(a) < EPSILON && fabs(b) < EPSILON) 
+	{
 		if (max(A.x, B.x) < min(C.x, D.x) || max(C.x, D.x) < min(A.x, B.x) ||
 			max(A.y, B.y) < min(C.y, D.y) || max(C.y, D.y) < min(A.y, B.y))
 		{
-			return 0; // 共线但不重叠
+			return 0; 
 		}
-		return 1; // 共线且重叠
+		return 1; 
 	}
 
 	if (fabs(b) < EPSILON) {
-		return 0; // 平行不相交
+		return 0; 
 	}
 
 	double alpha = a / b;
 	double beta = c / b;
 
-	// 检查是否在线段范围内
 	if (alpha < 0.0 || alpha > 1.0 || beta < 0.0 || beta > 1.0) {
-		return 0; // 交点在延长线上，不是线段相交
+		return 0; 
 	}
 
-	// 计算交点
 	intersec.x = A.x + alpha * (B.x - A.x);
 	intersec.y = A.y + alpha * (B.y - A.y);
 
-	return 2; // 线段相交
+	return 2;
 }
 
 
@@ -935,7 +922,6 @@ inline bool doIntersect(const Point2d& p1, const Point2d& p2,
 	{
 		if (1 == res)
 		{
-			// 处理共线情况：检查端点是否在线段上
 			if (containsPoint(p1, p2, p3))
 			{
 				intersection = p3;
@@ -966,7 +952,6 @@ inline bool doIntersect(const Point2d& p1, const Point2d& p2,
 	}
 }
 
-// 计算线段与三角形的交点，返回交点列表和 mask
 inline vector<Point2d> triaLineSegIntersec(
 	const Point2d& A, const Point2d& B, const Point2d& C,
 	const Point2d& p1, const Point2d& p2, int &mask)
@@ -974,7 +959,6 @@ inline vector<Point2d> triaLineSegIntersec(
 	std::vector<Point2d> intersections;
 	mask = 0;
 
-	// 分别计算 p1p2 与三角形三条边的交点
 	Point2d intersection1, intersection2, intersection3;
 	bool found1 = doIntersect(A, B, p1, p2, intersection1);
 	bool found2 = doIntersect(B, C, p1, p2, intersection2);
@@ -1001,14 +985,13 @@ int __declspec(dllexport) isExi(std::vector<T>& es, const T& e) {
 	auto it = std::find(es.begin(), es.end(), e);
 
 	if (it != es.end()) {
-		return static_cast<int>(std::distance(es.begin(), it)); // 返回索引
+		return static_cast<int>(std::distance(es.begin(), it));
 	}
 	else {
-		return -1; // 未找到
+		return -1;
 	}
 }
 
-// 比较两个 Point2d 是否近似相等
 inline bool arePointsEqual(const cv::Point2d& p1
 	, const cv::Point2d& p2)
 {
@@ -1016,7 +999,6 @@ inline bool arePointsEqual(const cv::Point2d& p1
 		&& (std::abs(p1.y - p2.y) < EPSILON);
 }
 
-// 查找 Point2d 在 vector<Point2d> 中的索引，未找到返回 -1
 inline int findPointIndex(const std::vector<cv::Point2d>& points
 	, const cv::Point2d& target)
 {
@@ -1030,7 +1012,7 @@ inline int findPointIndex(const std::vector<cv::Point2d>& points
 		return std::distance(points.begin(), it);
 	}
 
-	return -1; // 未找到
+	return -1;
 }
 
 
@@ -1050,24 +1032,19 @@ inline Point2d findMidpoint(Point2d A, Point2d B)
 	return midpoint;
 }
 
-// 检查两条线段 AB 和 CD 是否共线，排除点重合情况
 inline bool areCollinear(const cv::Point2d& A
 	, const cv::Point2d& B, const cv::Point2d& C, const cv::Point2d& D)
 {
-	// 排除 A 和 B 重合，或者 C 和 D 重合的情况
 	if (arePointsEqual(A, B) || arePointsEqual(C, D)) {
-		return false; // 如果线段退化为一个点，不可能共线
+		return false;
 	}
 
-	// 计算叉积，判断是否接近零（表示共线）
 	double cp1 = crossProduct(A, B, C);
 	double cp2 = crossProduct(A, B, D);
 
 	return (std::abs(cp1) < TOLERANCE) && (std::abs(cp2) < TOLERANCE);
 }
 
-
-// 计算仿射变换矩阵
 inline Matrix3d computeAffineTransformation(const MatrixXd& A, const MatrixXd& B) {
 	int n = A.cols();
 	if (A.rows() != 2 || B.rows() != 2 || A.cols() != B.cols() || n < 2) {
@@ -1075,35 +1052,27 @@ inline Matrix3d computeAffineTransformation(const MatrixXd& A, const MatrixXd& B
 		exit(EXIT_FAILURE);
 	}
 
-	// 计算 A 和 B 的质心
 	Vector2d centroid_A = A.rowwise().mean();
 	Vector2d centroid_B = B.rowwise().mean();
 
-	// 去中心化
 	MatrixXd A_prime = A.colwise() - centroid_A;
 	MatrixXd B_prime = B.colwise() - centroid_B;
 
-	// 计算最优变换矩阵 H
 	Matrix2d AAT_inv = A_prime * A_prime.transpose();
 
-	// 检查是否接近零矩阵，避免奇异
 	if (AAT_inv.norm() < 1e-8) {
 		cerr << "Warning: Matrix is near singular, applying regularization" << endl;
 		AAT_inv += Matrix2d::Identity() * 1e-6;
 	}
 
-	// 使用更稳定的 SVD 计算
 	BDCSVD<Matrix2d> svd(AAT_inv, ComputeFullU | ComputeFullV);
 
-	// 计算伪逆
 	Matrix2d AAT_pinv = svd.solve(Matrix2d::Identity());
 
-	// 计算 H 矩阵
 	Matrix2d H = B_prime * A_prime.transpose() * AAT_pinv;
 
 	Vector2d t = centroid_B - H * centroid_A;
 
-	// 组装 3x3 变换矩阵
 	Matrix3d T = Matrix3d::Identity();
 	T.block<2, 2>(0, 0) = H;
 	T.block<2, 1>(0, 2) = t;
@@ -1111,11 +1080,11 @@ inline Matrix3d computeAffineTransformation(const MatrixXd& A, const MatrixXd& B
 	return T;
 }
 
-// 使用仿射变换矩阵 T 变换一个 2D 点
-inline Vector2d applyAffineTransformation(const Matrix3d& T, const Vector2d& point) {
-	Vector3d point_homogeneous(point(0), point(1), 1.0); // 转换为齐次坐标
-	Vector3d transformed_point_homogeneous = T * point_homogeneous; // 变换
-	return transformed_point_homogeneous.head<2>(); // 提取 x', y'
+inline Vector2d applyAffineTransformation(const Matrix3d& T, const Vector2d& point) 
+{
+	Vector3d point_homogeneous(point(0), point(1), 1.0);
+	Vector3d transformed_point_homogeneous = T * point_homogeneous; 
+	return transformed_point_homogeneous.head<2>(); 
 }
 
 
@@ -1712,41 +1681,40 @@ inline bool isAlmostEqual(const Point2d& p1, const Point2d& p2)
 		&& (std::fabs(p1.y - p2.y) < TOLERANCE);
 }
 
-
-// 判断点 (px, py) 是否在线段 (x1, y1) - (x2, y2) 上
 inline bool isPointOnSegment(Point2d p, Point2d a, Point2d b) {
 	double crossProduct = (p.x - a.x) * (b.y - a.y) - (p.y - a.y) * (b.x - a.x);
-	if (fabs(crossProduct) > 1e-6) return false;  // 不共线
+	if (fabs(crossProduct) > 1e-6) return false;  
 	double dotProduct = (p.x - a.x) * (b.x - a.x) + (p.y - a.y) * (b.y - a.y);
-	if (dotProduct < 0) return false;  // 超出 a 端点
+	if (dotProduct < 0) return false;  
 	double squaredLengthBA = (b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y);
-	if (dotProduct > squaredLengthBA) return false;  // 超出 b 端点
-	return true;  // 在线段上
+	if (dotProduct > squaredLengthBA) return false;  
+	return true;
 }
 
-// **Ray-Casting 射线法** 判断点是否在闭合曲线内
 inline bool isPointInsidePolygon(Point2d p, const vector<Point2d>& polygon) {
 	int crossings = 0;
 	size_t n = polygon.size();
 
-	for (size_t i = 0; i < n; i++) {
+	for (size_t i = 0; i < n; i++) 
+	{
 		Point2d a = polygon[i];
 		Point2d b = polygon[(i + 1) % n];
 
-		// 点在边上，直接返回 true
-		if (isPointOnSegment(p, a, b)) return true;
+		if (isPointOnSegment(p, a, b)) 
+			return true;
 
-		// 保证 a.y <= b.y
-		if (a.y > b.y) std::swap(a, b);
+		if (a.y > b.y) 
+			std::swap(a, b);
 
-		// 忽略水平边
-		if (abs(a.y - b.y) < 1e-10) continue;
+		if (abs(a.y - b.y) < 1e-10) 
+			continue;
 
-		// 判断 p.y 是否在 (a.y, b.y) 之间（开区间）
-		if (p.y > a.y && p.y <= b.y) {
+		if (p.y > a.y && p.y <= b.y) 
+		{
 			double xIntersect = a.x + (p.y - a.y) * (b.x - a.x) / (b.y - a.y);
 
-			if (xIntersect > p.x) {
+			if (xIntersect > p.x) 
+			{
 				crossings++;
 			}
 		}
@@ -1755,26 +1723,29 @@ inline bool isPointInsidePolygon(Point2d p, const vector<Point2d>& polygon) {
 	return (crossings % 2 == 1);
 }
 
-// 计算三角形归一化
-inline void normalizeTriangle(const vector<Point2d>& T, vector<Point2d>& T_norm, Point2d& center, double& scale) {
+inline void normalizeTriangle(const vector<Point2d>& T, vector<Point2d>& T_norm
+	, Point2d& center, double& scale) 
+{
 	center.x = (T[0].x + T[1].x + T[2].x) / 3.0;
 	center.y = (T[0].y + T[1].y + T[2].y) / 3.0;
 
 	double maxDist = 0;
-	for (const auto& pt : T) {
+	for (const auto& pt : T) 
+	{
 		double dist = norm(pt - center);
-		if (dist > maxDist) maxDist = dist;
+		if (dist > maxDist) 
+			maxDist = dist;
 	}
 
 	scale = (maxDist > 0) ? (1.0 / maxDist) : 1.0;
 
 	T_norm.clear();
-	for (const auto& pt : T) {
+	for (const auto& pt : T) 
+	{
 		T_norm.push_back((pt - center) * scale);
 	}
 }
 
-// 计算点 A 在 T1 中的重心坐标
 inline Vec3d computeBarycentricCoords(const Point2d& A, const vector<Point2d>& T1) {
 	Matrix3d M;
 	M << T1[0].x, T1[1].x, T1[2].x,
@@ -1786,16 +1757,15 @@ inline Vec3d computeBarycentricCoords(const Point2d& A, const vector<Point2d>& T
 	return Vec3d(lambda(0), lambda(1), lambda(2));
 }
 
-// 计算对应点在 T2 中的位置
-inline Point2d computeCorrespondingPoint(const Vec3d& lambda, const vector<Point2d>& T2) {
+inline Point2d computeCorrespondingPoint(const Vec3d& lambda, const vector<Point2d>& T2) 
+{
 	return lambda[0] * T2[0] + lambda[1] * T2[1] + lambda[2] * T2[2];
 }
 
-
-// 传入 T1、T2 三角形的三个点，以及 T1 中的查询点 A
 inline Point2d findCorrespondingPoint_affine(const Point2d& A,
 	const std::vector<Point2d>& T1,
-	const std::vector<Point2d>& T2) {
+	const std::vector<Point2d>& T2) 
+{
 	Eigen::Vector2d P0(T1[0].x, T1[0].y);
 	Eigen::Vector2d P1(T1[1].x, T1[1].y);
 	Eigen::Vector2d P2(T1[2].x, T1[2].y);
@@ -1814,15 +1784,12 @@ inline Point2d findCorrespondingPoint_affine(const Point2d& A,
 	return Point2d(result.x(), result.y());
 }
 
-
-
-// 计算两点间欧几里得距离
 template<class T>
-double __declspec(dllexport) dist(const T& P1, const T& P2) {
+double __declspec(dllexport) dist(const T& P1, const T& P2)
+{
 	return sqrt((P1.x - P2.x) * (P1.x - P2.x) + (P1.y - P2.y) * (P1.y - P2.y));
 }
 
-// 计算三角形的面积
 template<class PointT>
 double __declspec(dllexport) triangleArea(const std::vector<PointT>& tri)
 {
@@ -1842,12 +1809,14 @@ inline double triangleArea(const Point2d t1, const Point2d t2, const Point2d t3)
 }
 
 template<class T>
-double __declspec(dllexport) triangleArea4ori(const vector<T>& T) {
+double __declspec(dllexport) triangleArea4ori(const vector<T>& T)
+{
 	return fabs((T[0].oci * (T[1].ori - T[2].ori) + T[1].oci
 		* (T[2].ori - T[0].ori) + T[2].oci * (T[0].ori - T[1].ori)) / 2.0);
 }
 
-inline double clamp(double x, double a, double b) {
+inline double clamp(double x, double a, double b) 
+{
 	return std::max(a, std::min(b, x));
 }
 
@@ -1856,9 +1825,10 @@ inline double angleBetween(const Point2d& u, const Point2d& v)
 	double dot = u.ddot(v);
 	double norm_u = norm(u);
 	double norm_v = norm(v);
-	if (norm_u == 0 || norm_v == 0) return 0.0; // 避免除0
+	if (norm_u == 0 || norm_v == 0) 
+		return 0.0; 
 	double cos_theta = dot / (norm_u * norm_v);
-	cos_theta = clamp(cos_theta, -1.0, 1.0); // 兼容 VS2013
+	cos_theta = clamp(cos_theta, -1.0, 1.0);
 	return acos(cos_theta);
 }
 
@@ -1870,10 +1840,11 @@ inline double triangleMinAngle(const Point2d& A, const Point2d& B, const Point2d
 	return std::min(std::min(angleA, angleB), angleC);
 }
 
-// 计算三角形的正三角形评分
 template<class T>
-double __declspec(dllexport) triangleQuality(const vector<T>& Tr) {
-	if (Tr.size() != 3) {
+double __declspec(dllexport) triangleQuality(const vector<T>& Tr) 
+{
+	if (Tr.size() != 3)
+	{
 		cerr << "Error: Triangle must have exactly 3 points!" << endl;
 		return numeric_limits<double>::max();
 	}
@@ -1882,31 +1853,26 @@ double __declspec(dllexport) triangleQuality(const vector<T>& Tr) {
 	double L2 = dist(Tr[1], Tr[2]);
 	double L3 = dist(Tr[2], Tr[0]);
 
-	// 计算边长比误差
 	double maxL = max({ L1, L2, L3 });
 	double minL = min({ L1, L2, L3 });
 	double E_ratio = maxL / minL - 1.0;
 
-	// 计算角度误差
 	double thetaA = acos((L2 * L2 + L3 * L3 - L1 * L1) / (2 * L2 * L3)) * 180.0 / PI;
 	double thetaB = acos((L1 * L1 + L3 * L3 - L2 * L2) / (2 * L1 * L3)) * 180.0 / PI;
 	double thetaC = 180.0 - thetaA - thetaB;
 
 	double E_angle = (fabs(thetaA - 60) + fabs(thetaB - 60) + fabs(thetaC - 60)) / 3.0;
 
-	// 计算高宽比
 	double s = (L1 + L2 + L3) / 2.0;
 	double area = triangleArea(Tr);
 	double R = (L1 * L2 * L3) / (4.0 * area);
 	double r = area / s;
 	double E_aspect = fabs(R / r - 2.0);
 
-	// 综合评分
 	double w1 = 1.0, w2 = 1.5, w3 = 1.2;
 	return w1 * E_ratio + w2 * (E_angle / 60) + w3 * E_aspect;
 }
 
-// 找到最接近正三角形的三角形
 template<class T>
 vector<T> __declspec(dllexport) findBestTriangle(const vector<vector<T>>& triangles)
 {
@@ -1925,13 +1891,13 @@ vector<T> __declspec(dllexport) findBestTriangle(const vector<vector<T>>& triang
 	return bestTriangle;
 }
 
-
-// 计算三角形边长的平均值
 template<class T>
-double __declspec(dllexport) averageEdgeLength(const vector<T>& tri) {
-	if (tri.size() != 3) {
+double __declspec(dllexport) averageEdgeLength(const vector<T>& tri) 
+{
+	if (tri.size() != 3) 
+	{
 		cerr << "Error: Triangle must have exactly 3 points!" << endl;
-		return -1.0;  // 返回无效值
+		return -1.0; 
 	}
 
 	double L1 = dist(tri[0], tri[1]);
@@ -1942,10 +1908,12 @@ double __declspec(dllexport) averageEdgeLength(const vector<T>& tri) {
 }
 
 template<class T>
-int __declspec(dllexport) nearestAngle(const vector<T>& tri, T&v) {
-	if (tri.size() != 3) {
+int __declspec(dllexport) nearestAngle(const vector<T>& tri, T&v) 
+{
+	if (tri.size() != 3) 
+	{
 		cerr << "Error: Triangle must have exactly 3 points!" << endl;
-		return -1.0;  // 返回无效值
+		return -1.0;
 	}
 
 	double L1 = dist(tri[0], v);
@@ -1971,23 +1939,21 @@ int __declspec(dllexport) nearestAngle(const vector<T>& tri, T&v) {
 	}
 }
 
-// 提取唯一的点集
 inline vector<Pt> extractUniqueVertices(const vector<vector<Pt>>& triangles)
 {
 	set<Pt, ComparePoints> uniquePoints;
 
-	// 遍历所有三角形的顶点，插入到 set 中
-	for (size_t i = 0; i < triangles.size(); i++) {
-		for (size_t j = 0; j < triangles[i].size(); j++) {
+	for (size_t i = 0; i < triangles.size(); i++)
+	{
+		for (size_t j = 0; j < triangles[i].size(); j++) 
+		{
 			uniquePoints.insert(triangles[i][j]);
 		}
 	}
 
-	// 转换 set 为 vector 输出
 	return vector<Pt>(uniquePoints.begin(), uniquePoints.end());
 }
 
-// 从点集M中选出所有包含P的三角形
 template<class T>
 vector<vector<T>> __declspec(dllexport) findTrianglesContainingP(const vector<T>& M, const T& P)
 {
@@ -2014,7 +1980,6 @@ vector<vector<T>> __declspec(dllexport) findTrianglesContainingP(const vector<T>
 	return result;
 }
 
-// 点到直线(AB)距离函数
 inline double ptLineDist(const Point2d& P, const Point2d& A, const Point2d& B)
 {
 	double numerator = fabs((B.x - A.x)*(A.y - P.y) - (A.x - P.x)*(B.y - A.y));
@@ -2024,8 +1989,7 @@ inline double ptLineDist(const Point2d& P, const Point2d& A, const Point2d& B)
 
 inline double squaredDistance(const Point2d& a, const Point2d& b)
 {
-	return (a - b).dot(a - b);  // 推荐，更高效
-	// 或者：return cv::norm(a - b) * cv::norm(a - b); // 不推荐，重复开根号
+	return (a - b).dot(a - b);
 }
 
 inline double pointToSegmentDistance(const Point2d& p
@@ -2037,20 +2001,18 @@ inline double pointToSegmentDistance(const Point2d& p
 
 	double abLenSq = abx * abx + aby * aby;
 	if (abLenSq == 0.0)
-		return std::numeric_limits<double>::max(); // a 和 b 重合
+		return std::numeric_limits<double>::max();
 
 	double t = (abx * apx + aby * apy) / abLenSq;
 
 	if (t < 0.0 || t > 1.0) {
-		return std::numeric_limits<double>::max(); // 垂足不在线段上
+		return std::numeric_limits<double>::max();
 	}
 
 	cv::Point2d projection(a.x + t * abx, a.y + t * aby);
 	return std::sqrt(squaredDistance(p, projection));
 }
 
-
-// 坐标插值：fA, fB, fC 是坐标，而非标量值
 inline Vector2d meanValueCoordInterp2D(
 	const Vector2d& P,
 	const Vector2d& A, const Vector2d& fA,
@@ -2065,13 +2027,11 @@ inline Vector2d meanValueCoordInterp2D(
 	double d1 = v1.norm();
 	double d2 = v2.norm();
 
-	// 防止除零
 	const double eps = 1e-12;
 	d0 = std::max(d0, eps);
 	d1 = std::max(d1, eps);
 	d2 = std::max(d2, eps);
 
-	// 夹角计算（用夹角公式 + clamp 防止 acos 精度误差）
 	auto safe_acos = [](double x) {
 		return std::acos(std::max(-1.0, std::min(1.0, x)));
 	};
@@ -2089,16 +2049,14 @@ inline Vector2d meanValueCoordInterp2D(
 	w1 /= w_sum;
 	w2 /= w_sum;
 
-	// 坐标插值：f(P) = w0 * fA + w1 * fB + w2 * fC
 	return w0 * fA + w1 * fB + w2 * fC;
 }
 
-// 计算点 P 在三角形 ABC 中的重心坐标
 inline Vec3d computeBarycentricCoords(const Point2d& P,
 	const Point2d& A,
 	const Point2d& B,
-	const Point2d& C) {
-	// 使用面积法或向量法都可以
+	const Point2d& C) 
+{
 	Vector2d v0(B.x - A.x, B.y - A.y);
 	Vector2d v1(C.x - A.x, C.y - A.y);
 	Vector2d v2(P.x - A.x, P.y - A.y);
@@ -2111,7 +2069,7 @@ inline Vec3d computeBarycentricCoords(const Point2d& P,
 
 	double denom = d00 * d11 - d01 * d01;
 	if (std::abs(denom) < 1e-10)
-		return Vec3d(1.0 / 3, 1.0 / 3, 1.0 / 3); // 防退化
+		return Vec3d(1.0 / 3, 1.0 / 3, 1.0 / 3);
 
 	double v = (d11 * d20 - d01 * d21) / denom;
 	double w = (d00 * d21 - d01 * d20) / denom;
@@ -2120,21 +2078,18 @@ inline Vec3d computeBarycentricCoords(const Point2d& P,
 	return Vec3d(u, v, w);
 }
 
-// 三角形重心插值版本
 inline Point2d findCorrespondingPoint_Barycentric(const Point2d& A,
 	const vector<Point2d>& T1,
-	const vector<Point2d>& T2) {
-	// 获取重心坐标
+	const vector<Point2d>& T2) 
+{
 	Vec3d lambda = computeBarycentricCoords(A, T1[0], T1[1], T1[2]);
-
-	// 用重心坐标插值 T2 上的点
 	Point2d B = lambda[0] * T2[0] + lambda[1] * T2[1] + lambda[2] * T2[2];
 	return B;
 }
 
-// 在两个相似三角形之间找到对应点
 inline Point2d findCorrespondingPoint(const Point2d& A, const vector<Point2d>& T1
-	, const vector<Point2d>& T2) {
+	, const vector<Point2d>& T2)
+{
 	vector<Point2d> T1_norm, T2_norm;
 	Point2d center1, center2;
 	double scale1, scale2;
@@ -2276,7 +2231,6 @@ void getMatrixB(T matrixB[], vector<Point2d> &ps)
 	}
 }
 
-// 计算所有样本对之间的距离平方，并返回中位数
 template<class T>
 T __declspec(dllexport) compute_median_distance(const vector<Point2d>& data) {
 	std::vector<T> distances;
@@ -2306,7 +2260,6 @@ T __declspec(dllexport) compute_median_distance(const vector<Point2d>& data) {
 	return std::sqrt(median / 2.0);  // sigma
 }
 
-// 高斯核函数：计算 x 对中心点 c 的核权重
 template<class T>
 T __declspec(dllexport) gaussian_kernel(const Point2d& x, const Point2d& c,
 	T sigma) {
@@ -2389,13 +2342,11 @@ inline Point2d applyAffineTransform(
 	const Point2d& t,
 	const Point2d& P)
 {
-	// 矩阵乘以点 + 平移
 	double x_new = A(0, 0) * P.x + A(0, 1) * P.y + t.x;
 	double y_new = A(1, 0) * P.x + A(1, 1) * P.y + t.y;
 	return Point2d(x_new, y_new);
 }
 
-// 输入两个三角形中 A→B 和 A′→B′ 的向量，输出旋转角（单位：弧度，范围：0~2π）
 inline double estimateTriangleRotationRadian(
 	const cv::Point2d& A, const cv::Point2d& B,
 	const cv::Point2d& A_, const cv::Point2d& B_)
@@ -2408,11 +2359,10 @@ inline double estimateTriangleRotationRadian(
 
 	double angle_rad = angle2 - angle1;
 
-	// 映射到 [0, 2π)
 	if (angle_rad < 0)
 		angle_rad += 2 * CV_PI;
 
-	return angle_rad; // 单位：弧度
+	return angle_rad;
 }
 
 inline FootResult repelFromSegmentIfTooClose(
@@ -2424,7 +2374,7 @@ inline FootResult repelFromSegmentIfTooClose(
 	cv::Point2d ab = b - a;
 	double ab_len_sq = ab.dot(ab);
 	if (ab_len_sq == 0.0) {
-		return{ p, false }; // a 和 b 重合，不处理
+		return{ p, false };
 	}
 
 	double ab_len = std::sqrt(ab_len_sq);
@@ -2432,7 +2382,6 @@ inline FootResult repelFromSegmentIfTooClose(
 	ab_unit.x = ab.x / ab_len;
 	ab_unit.y = ab.y / ab_len;
 
-	// 求垂足参数 t，判断是否在段上
 	cv::Point2d ap = p - a;
 	double t = ab.dot(ap) / ab_len_sq;
 	bool onSegment = (t >= 0.0 && t <= 1.0);
@@ -2440,10 +2389,8 @@ inline FootResult repelFromSegmentIfTooClose(
 		return{ p, false };
 	}
 
-	// 计算垂足
 	cv::Point2d foot = a + t * ab;
 
-	// 距离过远，无需调整
 	cv::Point2d vec_foot_to_p = p - foot;
 	double dist_sq = vec_foot_to_p.dot(vec_foot_to_p);
 	if (dist_sq >= min_dist * min_dist)
@@ -2451,14 +2398,10 @@ inline FootResult repelFromSegmentIfTooClose(
 		return{ p, false };
 	}
 
-	// 法向方向（左手法线）
 	cv::Point2d normal(-ab_unit.y, ab_unit.x);
-
-	// 判断 p 在 ab 的哪一侧（使用叉积）
 	double cross = ab.x * ap.y - ab.y * ap.x;
 	cv::Point2d direction = (cross >= 0.0) ? normal : -normal;
 
-	// 沿远离 ab 的方向移动 (min_dist - dist)
 	double dist = std::sqrt(dist_sq);
 	double move_len = min_dist - dist;
 	cv::Point2d adjustedP = p + direction * move_len;
