@@ -24,8 +24,8 @@ Performance optimization, algorithm modularization, and platform portability are
 
 If you use or reference this code in academic work, please cite the corresponding paper:
 
-> **Structured Bitmap-to-Mesh Triangulation: A Boundary-Embedding Framework for Numerical Geometry on Raster Domains**  
-> _Submitted to SIIMS, 2025._
+> **Structured Bitmap-to-Mesh Triangulation for Metric-Consistent PDE Discretization**  
+> _Submitted to SISC, 2025._
 
 ---
 
