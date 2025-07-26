@@ -62,7 +62,7 @@ All rights belong to the original author. If you use this code, please also ackn
 
 ## 🖥️ Platform Compatibility
 
-- ✔️ Tested with: **Windows 7+ / Visual Studio 2013**
+- ✔️ Tested with: **Windows 10+ / Visual Studio 2015**
 - ❌ Not tested on: Linux / macOS / gcc / clang
 - No makefile or CMake script provided yet.
 - Some C++11 features may require adjustment for compatibility with modern compilers.
@@ -70,7 +70,6 @@ All rights belong to the original author. If you use this code, please also ackn
 Future versions will aim to provide:
 - A modular build system (e.g., CMake)
 - POSIX compatibility for Linux/macOS
-- Support for modern compilers (MSVC ≥ 2019, GCC, Clang)
 
 ---
 
