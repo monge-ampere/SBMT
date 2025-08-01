@@ -13,7 +13,7 @@ This is a **single-threaded prototype** focused on demonstrating the core algori
 - Brute-force handling of `$b$`-type retriangulation logic: currently implemented in a slow, non-optimized manner.
 - No parallel execution: neither multithreading nor GPU acceleration is currently supported.
 - No adaptive refinement or local resolution control.
-- **Platform limitation:** This version is tested and built exclusively with **Microsoft Visual Studio 2013 (Windows)**.  
+- **Platform limitation:** This version is tested and built exclusively with **Microsoft Visual Studio 2015 (Windows)**.  
   It currently **does not support cross-platform compilation** on Linux or macOS.
 
 Performance optimization, algorithm modularization, and platform portability are planned for future versions.
@@ -24,8 +24,8 @@ Performance optimization, algorithm modularization, and platform portability are
 
 If you use or reference this code in academic work, please cite the corresponding paper:
 
-> **Structured Bitmap-to-Mesh Triangulation for Metric-Consistent PDE Discretization**  
-> _Submitted to SISC, 2025._
+> **Structured Bitmap-to-Mesh Triangulation for Geometry-Aware Discretization of Image-Derived Domains**  
+> _Submitted to CMAME, 2025._
 
 ---
 
