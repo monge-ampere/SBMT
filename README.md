@@ -25,7 +25,7 @@ Performance optimization, algorithm modularization, and platform portability are
 If you use or reference this code in academic work, please cite the corresponding paper:
 
 > **Structured Bitmap-to-Mesh Triangulation for Geometry-Aware Discretization of Image-Derived Domains**  
-> _Submitted to CMAME, 2025._
+> _Submitted to Graphical Models, 2025._
 
 ---
 
