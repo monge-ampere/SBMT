@@ -76,7 +76,6 @@ Future versions will aim to provide:
 ## Planned Features
 
 - Modularization of retriangulation rules
-- Refactor `$b$`-type logic for efficiency
 - Parallel execution (OpenMP or GPU)
 - Performance profiling and benchmarks
 - Adaptive refinement for geometric detail
