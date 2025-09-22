@@ -1,11 +1,11 @@
-# 🧩 Structured Bitmap-to-Mesh Triangulation (SBMT)
+# Structured Bitmap-to-Mesh Triangulation (SBMT)
 
 This repository contains a prototype implementation of **Structured Bitmap-to-Mesh Triangulation (SBMT)**, a rule-driven triangulation framework designed for **raster domains**.  
 SBMT deterministically embeds polygonal boundaries into a regular triangular grid using a finite set of **lookup-table-based retriangulation templates**, supporting structure-aware numerical analysis on bitmap data.
 
 ---
 
-## 🔧 Status
+## Status
 
 This is a **single-threaded prototype** focused on demonstrating the core algorithmic principles. Current limitations include:
 
@@ -20,7 +20,7 @@ Performance optimization, algorithm modularization, and platform portability are
 
 ---
 
-## 📘 Reference
+## Reference
 
 If you use or reference this code in academic work, please cite the corresponding paper:
 
@@ -29,7 +29,7 @@ If you use or reference this code in academic work, please cite the correspondin
 
 ---
 
-## 📂 Structure
+## Structure
 
 ```
 SBMT/
@@ -45,7 +45,7 @@ SBMT/
 
 ---
 
-## 🔍 Third-Party Code Notice
+## Third-Party Code Notice
 
 This project includes an adapted version of the `kdtree` implementation by:
 
@@ -60,7 +60,7 @@ All rights belong to the original author. If you use this code, please also ackn
 
 ---
 
-## 🖥️ Platform Compatibility
+## Platform Compatibility
 
 - ✔️ Tested with: **Windows 10+ / Visual Studio 2015**
 - ❌ Not tested on: Linux / macOS / gcc / clang
@@ -73,15 +73,15 @@ Future versions will aim to provide:
 
 ---
 
-## 🚧 Planned Features
+## Planned Features
 
-- ✅ Modularization of retriangulation rules
-- ✅ Refactor `$b$`-type logic for efficiency
-- 🚀 Parallel execution (OpenMP or GPU)
-- 📈 Performance profiling and benchmarks
-- 🎯 Adaptive refinement for geometric detail
-- 🛠️ CMake-based cross-platform build
-- 🧪 Integration with numerical solvers (PDE, FEM)
+- Modularization of retriangulation rules
+- Refactor `$b$`-type logic for efficiency
+- Parallel execution (OpenMP or GPU)
+- Performance profiling and benchmarks
+- Adaptive refinement for geometric detail
+- CMake-based cross-platform build
+- Integration with numerical solvers (PDE, FEM)
 
 ---
 
